@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { buildDeploymentConfig, CoolifyClient, reconcile } from './coolify.mjs';
+import { buildDeploymentConfig, CoolifyClient, deployAndWait, reconcile } from './coolify.mjs';
 
 const environment = {
   GITHUB_REPOSITORY: 'example/house-tracking',
@@ -56,4 +56,13 @@ test('reuses existing resources during reconciliation', async () => {
   assert.equal(result.application.uuid, 'app-1');
   assert.equal(calls.filter(([, method]) => method === 'POST').length, 0);
   assert.equal(calls.filter(([, method]) => method === 'PATCH').length, 2);
+});
+
+test('accepts the direct deployment response used by older Coolify versions', async () => {
+  const config = buildDeploymentConfig(environment);
+  const client = { request: async (path) => path === '/deploy'
+    ? { deployment_uuid: 'deployment-1' }
+    : { status: 'finished' } };
+  const result = await deployAndWait(client, config, { uuid: 'app-1' }, { pollMs: 0, timeoutMs: 100 });
+  assert.equal(result.deploymentUuid, 'deployment-1');
 });

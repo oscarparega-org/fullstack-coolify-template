@@ -151,7 +151,12 @@ export async function deployAndWait(client, config, application, options = {}) {
   const timeoutMs = options.timeoutMs ?? 20 * 60_000;
   const pollMs = options.pollMs ?? 10_000;
   const queued = await client.request('/deploy', { method: 'POST', deploy: true, body: { tag: config.resourceTag, force: false } });
-  const deploymentUuid = queued.deployments?.[0]?.deployment_uuid;
+  // Current Coolify returns { deployments: [...] }; older installations have
+  // returned either the deployment object directly or wrapped in an array.
+  const deploymentUuid = queued?.deployments?.[0]?.deployment_uuid
+    || queued?.deployment?.deployment_uuid
+    || queued?.deployment_uuid
+    || (Array.isArray(queued) ? queued[0]?.deployment_uuid : undefined);
   if (!deploymentUuid) throw new Error('Coolify did not return a deployment UUID');
   const started = Date.now();
   while (Date.now() - started < timeoutMs) {
