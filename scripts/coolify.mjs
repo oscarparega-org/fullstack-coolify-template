@@ -105,8 +105,7 @@ export async function reconcile(client, config) {
     docker_compose_domains: [
       { name: 'frontend', domain: `${config.frontendUrl}:3000` },
       { name: 'backend', domain: `${config.apiPublicUrl}:3000` }
-    ],
-    noindex_domains: [config.frontendUrl, config.apiPublicUrl]
+    ]
   };
   if (!application) {
     const created = await client.request('/applications/public', {

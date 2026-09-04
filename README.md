@@ -112,7 +112,7 @@ The CI workflow runs all of these checks before provisioning or deployment. The 
 - The script refuses to take over a same-named project unless its management marker matches the current GitHub repository ID.
 - API failures report the endpoint and status only, never response bodies or token values.
 - Automatic Coolify GitHub webhooks are disabled. GitHub Actions is the single deployment controller and deploys `GITHUB_SHA`.
-- Both public domains are marked `noindex`, and the frontend publishes a restrictive robots policy. This is a development environment, not a production topology.
+- The frontend publishes a restrictive robots policy. This is a development environment, not a production topology; authentication or network restrictions are still required if it must be private.
 
 The automation uses Coolify's documented [REST API](https://coolify.io/docs/api-reference/api) to manage the resources. Since Coolify evolves independently, upgrade Coolify deliberately and run `node --test scripts/coolify.test.mjs` after changing the reconciliation contract.
 
