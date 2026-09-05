@@ -58,6 +58,15 @@ test('reuses existing resources during reconciliation', async () => {
   assert.equal(calls.filter(([, method]) => method === 'PATCH').length, 2);
   const applicationUpdate = calls.find(([path]) => path === '/applications/app-1');
   assert.deepEqual(applicationUpdate[2], { git_commit_sha: config.sha, is_auto_deploy_enabled: false });
+  const environmentUpdate = calls.find(([path]) => path === '/applications/app-1/envs/bulk');
+  const frontendUrl = environmentUpdate[2].data.find(({ key }) => key === 'FRONTEND_URL');
+  assert.deepEqual(frontendUrl, {
+    key: 'FRONTEND_URL',
+    value: config.frontendUrl,
+    is_buildtime: true,
+    is_runtime: true,
+    is_preview: false
+  });
 });
 
 test('accepts the direct deployment response used by older Coolify versions', async () => {

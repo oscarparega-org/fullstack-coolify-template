@@ -141,7 +141,9 @@ export async function reconcile(client, config) {
   await client.request(`/applications/${application.uuid}/envs/bulk`, {
     method: 'PATCH',
     body: { data: [
-      { key: 'FRONTEND_URL', value: config.frontendUrl, is_buildtime: false, is_runtime: true, is_preview: false },
+      // Coolify resolves every Docker Compose interpolation before the image
+      // build, including values that are only consumed by runtime services.
+      { key: 'FRONTEND_URL', value: config.frontendUrl, is_buildtime: true, is_runtime: true, is_preview: false },
       { key: 'PUBLIC_API_URL', value: config.apiPublicUrl, is_buildtime: true, is_runtime: true, is_preview: false },
       { key: 'APP_NAME', value: config.displayName, is_buildtime: true, is_runtime: true, is_preview: false }
     ] }
