@@ -12,5 +12,5 @@
     "lint": "eslint src",
     "test": "vitest run src"
   },
-  "devDependencies": { "typescript": "^5.9.0", "vitest": "3.2.7" }
+  "devDependencies": { "typescript": "^7.0.2", "vitest": "3.2.7" }
 }
