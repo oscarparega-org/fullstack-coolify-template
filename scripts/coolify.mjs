@@ -132,7 +132,10 @@ export async function reconcile(client, config) {
     });
     application = { uuid: created.uuid };
   } else {
-    await client.request(`/applications/${application.uuid}`, { method: 'PATCH', body: applicationSettings });
+    await client.request(`/applications/${application.uuid}`, {
+      method: 'PATCH',
+      body: { git_commit_sha: config.sha, is_auto_deploy_enabled: false }
+    });
   }
 
   await client.request(`/applications/${application.uuid}/envs/bulk`, {
