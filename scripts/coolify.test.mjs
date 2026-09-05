@@ -62,9 +62,15 @@ test('reuses existing resources during reconciliation', async () => {
 
 test('accepts the direct deployment response used by older Coolify versions', async () => {
   const config = buildDeploymentConfig(environment);
-  const client = { request: async (path) => path === '/deploy'
-    ? { deployment_uuid: 'deployment-1' }
-    : { status: 'finished' } };
+  let deployOptions;
+  const client = { request: async (path, options) => {
+    if (path === '/deploy') {
+      deployOptions = options;
+      return { deployment_uuid: 'deployment-1' };
+    }
+    return { status: 'finished' };
+  } };
   const result = await deployAndWait(client, config, { uuid: 'app-1' }, { pollMs: 0, timeoutMs: 100 });
   assert.equal(result.deploymentUuid, 'deployment-1');
+  assert.deepEqual(deployOptions.body, { uuid: 'app-1', force: false });
 });

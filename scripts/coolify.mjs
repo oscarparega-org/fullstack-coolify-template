@@ -152,7 +152,11 @@ export async function reconcile(client, config) {
 export async function deployAndWait(client, config, application, options = {}) {
   const timeoutMs = options.timeoutMs ?? 20 * 60_000;
   const pollMs = options.pollMs ?? 10_000;
-  const queued = await client.request('/deploy', { method: 'POST', deploy: true, body: { tag: config.resourceTag, force: false } });
+  const queued = await client.request('/deploy', {
+    method: 'POST',
+    deploy: true,
+    body: { uuid: application.uuid, force: false }
+  });
   // Current Coolify returns { deployments: [...] }; older installations have
   // returned either the deployment object directly or wrapped in an array.
   const deploymentUuid = queued?.deployments?.[0]?.deployment_uuid
