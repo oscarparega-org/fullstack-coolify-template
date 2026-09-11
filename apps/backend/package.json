@@ -19,7 +19,7 @@
     "@prisma/client": "6.12.0",
     "@template/shared": "*",
     "better-auth": "1.7.1",
-    "dotenv": "17.2.3",
+    "dotenv": "17.4.2",
     "hono": "^4.9.0"
   },
   "devDependencies": {
